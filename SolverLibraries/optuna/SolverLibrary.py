@@ -67,36 +67,36 @@ class SolverLibrary(BaseSolverLibrary):
         
         # Retrieve trials history
         trials = problem.trials        
-        n_complete = len([t for t in trials if t.state == optuna.structs.TrialState.COMPLETE])
+        n_complete = len([t for t in trials if t.state == optuna.trial.TrialState.COMPLETE])
         print('Num. of complete trials:', n_complete)        
         t = [i for i in range(n_complete)]
         objectives_data = config.get_objective_data()
         n_objectives = len(objectives_data)
         
         # Plot objectives convergence history
-        # if n_objectives == 1:
-        #     objectives = []
-        #     for trial in trials:
-        #         if trial.state == optuna.structs.TrialState.COMPLETE:
-        #             objectives.append(trial.value)
-        #     print("objectives:", objectives)
-        #     plt.scatter(t, objectives, alpha=0.5)
-        # elif n_objectives > 1:
-        #     objectives_history = []
-        #     colors = cm.rainbow(np.linspace(0, 1, n_objectives))
-        #     for i in range(n_objectives):
-        #         objectives = []
-        #         for trial in trials:
-        #             if trial.state == optuna.structs.TrialState.COMPLETE:
-        #                 objectives.append(trial.values[i])
-        #         objectives_history.append(objectives)
-        #         if i != 0:
-        #             plt.twinx()
-        #         plt.scatter(t, objectives, alpha=0.5, color = colors[i])
-        #         plt.tick_params(axis='y', labelcolor=colors[i])
-        #         plt.ylabel(list(objectives_data.keys())[i])             
-        # plt.suptitle("Objective per trial")
-        # plt.show()
+        if n_objectives == 1:
+            objectives = []
+            for trial in trials:
+                if trial.state == optuna.trial.TrialState.COMPLETE:
+                    objectives.append(trial.value)
+            print("objectives:", objectives)
+            plt.scatter(t, objectives, alpha=0.5)
+        elif n_objectives > 1:
+            objectives_history = []
+            colors = cm.rainbow(np.linspace(0, 1, n_objectives))
+            for i in range(n_objectives):
+                objectives = []
+                for trial in trials:
+                    if trial.state ==optuna.trial.TrialState.COMPLETE:
+                        objectives.append(trial.values[i])
+                objectives_history.append(objectives)
+                if i != 0:
+                    plt.twinx()
+                plt.scatter(t, objectives, alpha=0.5, color = colors[i])
+                plt.tick_params(axis='y', labelcolor=colors[i])
+                plt.ylabel(list(objectives_data.keys())[i])             
+        plt.suptitle("Objective per trial")
+        plt.show()
 
         # Objective history for single-objective optimization
         if n_objectives == 1:
@@ -134,7 +134,7 @@ class SolverLibrary(BaseSolverLibrary):
                 for i in range(n_objectives):
                     objectives = []
                     for trial in trials:
-                        if trial.state == optuna.structs.TrialState.COMPLETE:
+                        if trial.state == optuna.trial.TrialState.COMPLETE:
                             objectives.append(trial.values[i])
                     objectives_history.append(objectives)
                     
@@ -161,7 +161,7 @@ class SolverLibrary(BaseSolverLibrary):
         all_vars_history = []
         min_order_of_mag = np.inf
         for i in range(n_design_variables):
-            var_history = [trial.params[list(design_variables.keys())[i]] for trial in trials if trial.state == optuna.structs.TrialState.COMPLETE]
+            var_history = [trial.params[list(design_variables.keys())[i]] for trial in trials if trial.state == optuna.trial.TrialState.COMPLETE]
             all_vars_history.append(var_history)
             min_order_of_mag = order_of_mag(min(min_order_of_mag, min(var_history)))
 

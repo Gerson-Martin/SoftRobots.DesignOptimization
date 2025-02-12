@@ -65,8 +65,8 @@ def createSegment(Length, Height, JointHeight, Thickness, JointSlopeAngle,lc=1):
     
     PointTags = np.append(PointTags, [gmsh.model.occ.addPoint(Thickness/2, YValue, ZValue, lc) for (YValue,ZValue) in zip(YValues,ZValues)])
     
-    LineTags = createLines(PointTags)
-    WireLoop = gmsh.model.occ.addWire(LineTags)
+    LineTags = createLines(PointTags.tolist())
+    WireLoop = gmsh.model.occ.addWire(LineTags.tolist())
     SurfaceTag = gmsh.model.occ.addPlaneSurface([WireLoop])
     ExtrudeTags = gmsh.model.occ.extrude([(2,SurfaceTag)],-Thickness,0,0)
     print("Segment extrude dim tags:", ExtrudeTags)

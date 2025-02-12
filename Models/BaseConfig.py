@@ -64,7 +64,6 @@ class BaseConfig(object):
         """
         return None
     
-
     ########################################################
     ###### Functions for managign Design Optimization ######
     ########################################################
@@ -279,10 +278,12 @@ class GmshDesignOptimization(BaseConfig):
             if not os.path.exists(full_filename):
                 # When we are generating the mesh, it is better to know something is happening so let's reactive the printed messages
                 gmsh.option.setNumber("General.Terminal", 1)
+                gmsh.model.mesh.removeDuplicateElements()
+                gmsh.model.mesh.removeDuplicateNodes()
+                
                 if mode == "Surface":
                     gmsh.model.mesh.generate(2)
-                elif mode == "Volume":
-                    
+                elif mode == "Volume":                    
                     gmsh.model.mesh.generate(3)
                 if refine:
                     gmsh.model.mesh.refine()

@@ -33,7 +33,7 @@ def optimize(config, id_config, n_iter, solver_library_name, solver_name, plot_r
     plot: boolean
         Plot intermediate graph results
     """
-    
+    print("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhola")
     # Initialize multithreading feature
     config.set_cache_mode(in_optimization_loop = True)
     

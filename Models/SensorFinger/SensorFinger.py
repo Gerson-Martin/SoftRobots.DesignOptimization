@@ -136,11 +136,19 @@ def createScene(rootNode, config):
     model.addObject('SparseLDLSolver', name='precond', template = "CompressedRowSparseMatrixd")
     model.addObject('GenericConstraintCorrection')
 
+    print("parametros","Length:",config.Length, "Height: ", config.Height," OuterRadius", config.OuterRadius,
+                                "TeethRadius", config.TeethRadius, "PlateauHeight" , config.PlateauHeight, 
+                                "JointHeight" , config.JointHeight, "Thickness" , config.Thickness, 
+                                "JointSlopeAngle" , config.JointSlopeAngle, "FixationWidth" , config.FixationWidth, 
+                                "BellowHeight" , config.BellowHeight, "NBellows" , config.NBellows, 
+                                "WallThickness" , config.WallThickness, "CenterThickness" , config.CenterThickness,
+                                "CavityCorkThickness" , config.CavityCorkThickness, "lc" , config.lc_finger, 
+                                "RefineAroundCavities", config.RefineAroundCavities)
+
     ##################
     ### Load model ###
     ##################
-    model.addObject('MeshVTKLoader', name='loader', 
-                    filename = config.get_mesh_filename(mode = "Volume", refine = 0, 
+    filename=config.get_mesh_filename(mode = "Volume", refine = 0, 
                                                         generating_function = Finger, 
                                 Length = config.Length, Height = config.Height, OuterRadius = config.OuterRadius,
                                 TeethRadius = config.TeethRadius, PlateauHeight = config.PlateauHeight, 
@@ -149,8 +157,21 @@ def createScene(rootNode, config):
                                 BellowHeight = config.BellowHeight, NBellows = config.NBellows, 
                                 WallThickness = config.WallThickness, CenterThickness = config.CenterThickness,
                                 CavityCorkThickness = config.CavityCorkThickness, lc = config.lc_finger, 
-                                RefineAroundCavities=config.RefineAroundCavities))
-    model.addObject('TetrahedronSetTopologyContainer', name='container', src='@loader')
+                                RefineAroundCavities=config.RefineAroundCavities)
+    model.addObject('MeshVTKLoader', name='loader', 
+                    filename = filename)
+    # q=model.loader.position.value
+    # a=[]
+    # for coor in q:
+    #     a.append([float(num) for num in coor])
+    # model.loader.position.value=a
+    # q2=model.loader.position.value
+    # # for coor in q2:
+    # #     print(list(coor))
+    # print(filename)
+    # input()
+    model.addObject('TetrahedronSetTopologyContainer',name='container', position=model.loader.position.getLinkPath(),
+                                      tetras=model.loader.tetras.getLinkPath())
     model.addObject('TetrahedronSetGeometryAlgorithms')
     model.addObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='4e-5')
     model.addObject('UniformMass', totalMass='0.1')
@@ -164,9 +185,8 @@ def createScene(rootNode, config):
     FollowingMONode = model.addChild('FollowingMONode')                
     FollowingMONode.addObject("MechanicalObject", name="FollowingMO", template="Vec3d", position=[0.0, 0, -3.0*config.Length], showObject=True, showObjectScale=20, showColor="0 0 1") 
     FollowingMONode.addObject("BarycentricMapping")
-
     # Effectors                                               
-    for i in range(1,3):                        
+    for i in range(1,3):              
         CurrentCavity = model.addChild('Cavity0'+str(i))
         BellowGap = (config.NBellows-1)*config.BellowHeight
         if i == 1:
@@ -186,6 +206,8 @@ def createScene(rootNode, config):
         CurrentCavity.addObject('MechanicalObject', src="@topology")
         CurrentCavity.addObject('SurfacePressureConstraint', template='Vec3d', triangles='@topology.triangles')
         CurrentCavity.addObject('BarycentricMapping', name="Mapping", mapForces="false", mapMasses="false")
+    
+
 
     # Visualization                          
     modelVisu = model.addChild('visu')
@@ -201,7 +223,7 @@ def createScene(rootNode, config):
                                 lc = config.lc_finger, RefineAroundCavities=config.RefineAroundCavities))
     modelVisu.addObject('OglModel', src="@loader", scale3d=[1, 1, 1])
     modelVisu.addObject('BarycentricMapping')
-
+   
     # Cable Actuator                        
     cables = model.addChild('cables')
     cable1 = cables.addChild('cable1')
@@ -233,7 +255,6 @@ def createScene(rootNode, config):
     #################
     # Generate Mold geometry only if not in an optimization loop
     if not config.in_optimization_loop:
-        
         # Mold Box
         config.get_mesh_filename(mode = "Surface", refine = 1, 
                                     generating_function = MoldBox,
@@ -255,8 +276,7 @@ def createScene(rootNode, config):
                  JointSlopeAngle = config.JointSlopeAngle, FixationWidth = config.FixationWidth, BellowHeight = config.BellowHeight, 
                  NBellows = config.NBellows, WallThickness = config.WallThickness, CenterThickness = config.CenterThickness, 
                  CavityCorkThickness = config.CavityCorkThickness, lc = config.lc_finger, MoldCoverTolerance = config.MoldCoverTolerance, 
-                 Stage1Mod=False)  
-        
+                 Stage1Mod=False)
 
         # Cavities Cork
         config.get_mesh_filename(mode = "Surface", refine = 1, 

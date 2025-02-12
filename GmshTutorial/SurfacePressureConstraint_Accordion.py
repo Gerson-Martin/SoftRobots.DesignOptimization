@@ -17,7 +17,9 @@ def createScene(rootNode):
                 bunny.addObject('ShewchukPCGLinearSolver', iterations=15, name='linearsolver', tolerance=1e-5, preconditioners='preconditioner', use_precond=True, update_step=1)
 
                 bunny.addObject('MeshVTKLoader', name='loader', filename='Accordion_Volumetric.vtk')
-                bunny.addObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
+                bunny.addObject('TetrahedronSetTopologyContainer', name='container', position=bunny.loader.position.getLinkPath(),
+                                      tetras=bunny.loader.tetras.getLinkPath())
+                
                 bunny.addObject('TetrahedronSetTopologyModifier')
 
                 bunny.addObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False)
@@ -28,8 +30,8 @@ def createScene(rootNode):
                 bunny.addObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness=1e12)
 
                 bunny.addObject('SparseLDLSolver', name='preconditioner')
-                bunny.addObject('LinearSolverConstraintCorrection', solverName='preconditioner')
-                #bunny.addObject('UncoupledConstraintCorrection')
+                # bunny.addObject('LinearSolverConstraintCorrection', name='preconditioner')
+                bunny.addObject('UncoupledConstraintCorrection')
 
 
 		#bunny/cavity

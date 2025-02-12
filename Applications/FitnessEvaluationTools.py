@@ -35,7 +35,7 @@ def simulation_loop(config, scene_lib):
 
     # Find needed computation time
     current_objectives = config.get_currently_assessed_objectives()
-    max_iter = max([config.get_objective_data()[current_objectives[i]][1] for i in range(len(current_objectives))])
+    max_iter = max( [config.get_objective_data()[current_objectives[i]][1] for i in range(len(current_objectives))] )
 
     # Main SOFA loop
     root = Sofa.Core.Node("root") # Generate the root node     

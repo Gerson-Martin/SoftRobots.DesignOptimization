@@ -73,7 +73,7 @@ def createCavity(Radius, NSegments, SegmentHeight, TeethDepth, WallThickness, lc
     
     
 
-def createAccordion(Radius, NSegments, SegmentHeight, TeethDepth, WallThickness, lc=1, Step=1):
+def createAccordion(Radius, NSegments, SegmentHeight, TeethDepth, WallThickness, lc=1, Step=7):
     
     PointTags = np.empty((0,1), int)
     TotalHeight = SegmentHeight*NSegments
@@ -181,7 +181,7 @@ def generateGeometry(Step):
     gmsh.write('Accordion_Volumetric.vtk')
 #   
     if Step==8:
-        gmsh.model.occ.synchronize()
+        gmsh.model.occ.synchronizae()
         gmsh.fltk.run()                
     
     gmsh.clear()
@@ -204,7 +204,7 @@ def generateGeometry(Step):
         
     gmsh.model.occ.synchronize()
 
-Step=9
+Step=7
 print("Showing Step: " + str(Step))
 generateGeometry(Step)
     

@@ -78,7 +78,11 @@ def analyse_sensitivity(config, id_config, n_samples_per_param, method = "OAaT",
                 config = config_lib.Config() 
             else:
                 config = config_lib.OptimizationConfig()
-            var_samples = list(np.linspace(design_variables[name_var][1], design_variables[name_var][2], n_samples_per_param))
+            if isinstance(design_variables[name_var][1],int) and isinstance(design_variables[name_var][1],int):
+                dtype=int
+            else:
+                dtype=float
+            var_samples = list(np.linspace(design_variables[name_var][1], design_variables[name_var][2], n_samples_per_param,dtype=dtype))
             objectives_var = []
              # Compute objective for each sampled var
             for sample in var_samples:
